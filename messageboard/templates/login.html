@@ -1,0 +1,26 @@
+{% extends '_skeleton.html' %}
+
+{% block includes %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block rawcontent %}
+    <section class="section">
+        <div class="container">
+            <div id="logincard" class="card">
+                <div class="card-header">
+                    <h1 class="card-header-title is-centered">Login</h1>
+                </div>
+                <div class="card-content">
+                    <form action="POST">
+
+                    </form>
+                    <p id="createinfo" class="has-text-grey-light">To create a new account just enter a username/password combination.
+                        <br>If no account with that
+                        username exists, a new one will be created for you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

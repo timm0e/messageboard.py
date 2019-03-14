@@ -1,0 +1,11 @@
+{% if user.is_authenticated %}
+    <div class="navbar-item has-dropdown is-hoverable is-right">
+        <a class="navbar-link">{{ user.username }}</a>
+
+    <div class="navbar-dropdown">
+        <a href="/logout" class="navbar-item">Logout</a>
+    </div>
+    </div>
+{% else %}
+    <a href="/login" class="navbar-item">Login</a>
+{% endif %}

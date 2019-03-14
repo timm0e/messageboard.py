@@ -1,0 +1,11 @@
+<div class="card">
+    <div class="card-header">
+        <p class="card-header-title is-centered">{{ post.title }}</p>
+    </div>
+    <div class="card-content">
+        <p>{{ post.body | linebreaks}}</p>
+    </div>
+    <div class="card-footer">
+        <p class="card-footer-item has-text-weight-light">Posted by {{ post.user.username }}</p>
+    </div>
+</div>

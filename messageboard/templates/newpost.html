@@ -1,0 +1,46 @@
+{% extends '_basepage.html' %}
+
+{% block includes %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/boardview.css" %}">
+{% endblock %}
+
+{% block content %}
+    <section class="hero is-dark">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">{{ board.name }}</h1>
+                {% if board.description %}
+                    <h2 class="subtitle has-text-weight-light">{{ board.description }}</h2>{% endif %}
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="field">
+                    <label class="label">Post title</label>
+                    <div class="control">
+                        <input type="text" class="input" placeholder="Post title">
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Post content</label>
+                    <div class="control">
+                        <textarea class="textarea" placeholder="Post content"></textarea>
+                    </div>
+                </div>
+
+                <div class="field is-grouped is-grouped-right">
+                    <div class="control">
+                        <a class="button is-light" href="{% url 'boardview' board.id %}" type="reset">Cancel</a>
+                        <button class="button is-link">Submit</button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% load static %}
+<script src="{% static "js/messages.js" %}"></script>
+
+{% for message in messages %}
+    <div class="notification is-marginless is-radiusless {{ message.tags }}">
+    <button class="delete"></button>
+    {{ message }}
+</div>
+{% endfor %}
+
+

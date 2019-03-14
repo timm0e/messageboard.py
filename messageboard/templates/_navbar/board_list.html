@@ -1,0 +1,3 @@
+{% for board in boards %}
+    <a class='navbar-item' href='{% url 'boardview' board.id %}'>{{ board.name }}</a>
+{% endfor %}

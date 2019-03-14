@@ -1,0 +1,25 @@
+{% with appname="MessageBoard" %}
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        {% if title %}
+            <title>{{ title }} - {{ appname }}</title>
+        {% else %}
+            <title>{{ appname }}</title>
+        {% endif %}
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static "css/bulma.min.css" %}">
+        {% block includes %}
+        {% endblock includes %}
+
+    </head>
+    <body>
+    {% block rawcontent %}
+
+    {% endblock %}
+    </body>
+    </html>
+{% endwith %}

@@ -1,0 +1,26 @@
+<nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+        <h1 class="navbar-item">MessageBoard</h1>
+    </div>
+
+    <div class="navbar-menu">
+        <div class="navbar-start">
+            <div class="navbar-item has-dropdown is-hoverable">
+                <a class="navbar-link">Boards</a>
+
+                <div class="navbar-dropdown">
+                    {% load board_list %}
+                    {% board_list %}
+                    <hr class="navbar-divider">
+                    <a href="/newboard" class="navbar-item has-text-grey">Create a new board</a>
+                </div>
+            </div>
+
+            <a href="#" class="navbar-item">My Posts</a>
+        </div>
+
+        <div class="navbar-end">
+            {% include "_navbar/user.html" %}
+        </div>
+    </div>
+</nav>

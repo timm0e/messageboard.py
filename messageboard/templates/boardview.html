@@ -1,0 +1,25 @@
+{% extends '_basepage.html' %}
+
+{% block includes %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/boardview.css" %}">
+{% endblock %}
+
+{% block content %}
+    <section class="hero is-dark">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">{{ board.name }}</h1>
+                {% if board.description %}<h2 class="subtitle has-text-weight-light">{{ board.description }}</h2>{% endif %}
+                <a class="button is-rounded is-pulled-right" id="newpost" href="{% url 'newpost' board.id %}">Create a new post</a>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            {% for post in posts %}
+                {% include "_postview.html" with post=post %}
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}
