@@ -1,12 +1,12 @@
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import get_object_or_404
 # Create your views here.
-from django.views.generic import DetailView, TemplateView
+from django.views.generic import DetailView, TemplateView, FormView
 
 from messageboard.models import Board
+from messageboard.forms import LoginForm
 
 
 class HomeView(TemplateView):
@@ -22,10 +22,10 @@ class BoardView(TemplateView):
     template_name = 'boardview.html'
 
     def get_context_data(self, **kwargs):
-        messages.success(self.request, "Messages work!")
         context = super(BoardView, self).get_context_data()
         board = get_object_or_404(Board, pk=kwargs['pk'])
         context['board'] = board
+        context['title'] = board.name
         posts = [post for post in board.posts.all()]
         context['posts'] = posts
         return context
@@ -37,6 +37,8 @@ class NewPost(LoginRequiredMixin, DetailView):
     context_object_name = 'board'
 
 
-class Login(LoginView):
+class LoginSignupView(FormView):
     template_name = 'login.html'
-    redirect_authenticated_user = True
+    form_class = LoginForm
+
+    LoginView
