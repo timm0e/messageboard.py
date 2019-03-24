@@ -13,10 +13,30 @@
                     <h1 class="card-header-title is-centered">Login</h1>
                 </div>
                 <div class="card-content">
-                    <form action="POST">
-
+                    <form method="POST">
+                        {% csrf_token %}
+                        {% load widget_tweaks %}
+                        <div class="field">
+                            <label class="label" for="{{ form.username.id_label_for }}">Username</label>
+                            <div class="control">
+                                {{ form.username | add_class:"input" }}
+                            </div>
+                        </div>
+                        <div class="field">
+                            <label class="label" for="{{ form.password.id_label_for }}">Password</label>
+                            <div class="control">
+                                {{ form.password | add_class:"input" }}
+                            </div>
+                        </div>
+                        <div class="field is-grouped is-grouped-right">
+                            <div class="control">
+                                <input type="submit" class="button is-info" value="Login / Signup">
+                            </div>
+                        </div>
                     </form>
-                    <p id="createinfo" class="has-text-grey-light">To create a new account just enter a username/password combination.
+                    <br>
+                    <p id="createinfo" class="has-text-grey-light">To create a new account just enter a
+                        username/password combination.
                         <br>If no account with that
                         username exists, a new one will be created for you.</p>
                 </div>
