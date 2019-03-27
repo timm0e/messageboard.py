@@ -9,9 +9,7 @@
     <section class="hero is-dark">
         <div class="hero-body">
             <div class="container">
-                <h1 class="title">{{ board.name }}</h1>
-                {% if board.description %}
-                    <h2 class="subtitle has-text-weight-light">{{ board.description }}</h2>{% endif %}
+                <h1 class="title">Create a new board</h1>
             </div>
         </div>
     </section>
@@ -21,26 +19,26 @@
                 {% csrf_token %}
                 {% load widget_tweaks %}
                 <div class="field">
-                    <label class="label" for="{{ form.title.id_label_for }}">Post Title</label>
+                    <label class="label" for="{{ form.name.id_label_for }}">Board name</label>
                     <div class="control">
-                        {{ form.title | add_class:"input" }}
+                        {{ form.name | add_class:"input" }}
                     </div>
 
-                    {% if form.title.errors %}
-                        {% for error in form.title.errors.data %}
+                    {% if form.name.errors %}
+                        {% for error in form.name.errors.data %}
                             <p class="help is-danger">{{ error.message }}</p>
                         {% endfor %}
                     {% endif %}
                 </div>
 
                 <div class="field">
-                    <label class="label" for="{{ form.body.id_label_for }}">Post Content</label>
+                    <label class="label has-text-grey has-text-weight-normal" for="{{ form.description.id_label_for }}">Board description (optional)</label>
                     <div class="control">
-                        {{ form.body | add_class:"input" }}
+                        {{ form.description | add_class:"input" }}
                     </div>
 
-                    {% if form.body.errors %}
-                        {% for error in form.body.errors.data %}
+                    {% if form.description.errors %}
+                        {% for error in form.description.errors.data %}
                             <p class="help is-danger">{{ error.message }}</p>
                         {% endfor %}
                     {% endif %}
@@ -49,7 +47,7 @@
 
                 <div class="field is-grouped is-grouped-right">
                     <div class="control">
-                        <a class="button is-light" href="{% url 'boardview' board.id %}" type="reset">Cancel</a>
+                        <a class="button is-light" href="/" type="reset">Cancel</a>
                         <input type="submit" class="button is-link" value="Submit">
                     </div>
                 </div>
