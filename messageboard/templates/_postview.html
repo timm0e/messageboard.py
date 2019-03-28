@@ -1,12 +1,13 @@
 <div class="card">
     <div class="card-header">
         <p class="card-header-title is-centered">{{ post.title }}</p>
-        {% if not noremove %}
-            {% load guardian_tags %}
-            {% get_obj_perms user for post as "post_perms" %}
-            {% if "delete_this_post" in post_perms %}
-                <a href="{% url "deletepost" post.id %}" class="card-header-icon has-text-grey"><i
-                        class="far fa-times-circle"></i></a>
+        {% if user.is_authenticated %}
+            {% if not noremove %}
+                {% load guardian_tags %}
+                {% get_obj_perms user for post as "post_perms" %}
+                {% if "delete_this_post" in post_perms %}
+                    <a href="{% url "deletepost" post.id %}" class="card-header-icon delete is-small"></a>
+                {% endif %}
             {% endif %}
         {% endif %}
     </div>

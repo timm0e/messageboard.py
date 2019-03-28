@@ -1,10 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends '_basepage.html' %}
+
+{% block includes %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/boardview.css" %}">
+{% endblock %}
+
+{% block content %}
+    <section class="hero is-dark">
+        <div class="hero-body">
+            <div class="container">
+                <div class="container">
+                <h1 class="title">
+                    {{ board.name }}
+                </h1>
+                {% if board.description %}
+                    <h2 class="subtitle has-text-weight-light">{{ board.description }}</h2>{% endif %}
+            </div>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container is-fluid">
+            <div class="notification is-dark">
+                <b>You are about to remove the board "{{ board.name }}"!</b><br><br>
+                This will also remove all posts in it.<br>
+                Do you want to continue?
+            </div>
+        </div>
+        <br>
+        <form method="post">
+            {% csrf_token %}
+            <div class="field is-grouped is-grouped-centered">
+                <div class="control">
+                    <a href="{% url "boardview" board.id %}" class="button is-disabled">Cancel</a>
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-dark">Delete</button>
+                </div>
+
+            </div>
+        </form>
+
+
+    </section>
+{% endblock %}

@@ -11,6 +11,9 @@ class Board(models.Model):
 
     # posts: Post[]
 
+    class Meta:
+        permissions = (("delete_this_board", "Delete this board"),)
+
     def __str__(self):
         return self.name
 

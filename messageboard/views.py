@@ -3,8 +3,7 @@ import datetime
 import django.contrib.auth as auth
 import guardian.shortcuts as guardian
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
+from guardian.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, UserManager
 from django.contrib.auth.views import LoginView, SuccessURLAllowedHostsMixin
 from django.forms import Form
@@ -16,9 +15,11 @@ from django.utils.http import is_safe_url
 from django.utils.timezone import now
 from django.views.generic import DetailView, TemplateView, FormView
 
+from djangotest import settings
 from messageboard import forms
 from messageboard.models import Board, Post
 from messageboard.forms import LoginForm, NewPostForm
+
 
 class BoardView(TemplateView):
     template_name = 'boardview.html'
@@ -34,7 +35,7 @@ class BoardView(TemplateView):
         return context
 
 
-class NewPost(FormView, LoginRequiredMixin):
+class NewPost(LoginRequiredMixin, FormView):
     template_name = 'newpost.html'
     form_class = NewPostForm
 
@@ -68,7 +69,7 @@ class LoginSignupView(FormView, SuccessURLAllowedHostsMixin):
         user = auth.authenticate(self.request, username=form.cleaned_data['username'],
                                  password=form.cleaned_data['password'])
         if user is not None:
-            auth.login(self.request, user)
+            auth.login(self.request, user, backend=settings.AUTHENTICATION_BACKENDS[0])
             return super().form_valid(form)
         if User.objects.filter(username=form.cleaned_data['username']).exists():
             form.add_error('username', "User already exists")
@@ -76,7 +77,7 @@ class LoginSignupView(FormView, SuccessURLAllowedHostsMixin):
             return super().form_invalid(form)
 
         user = User.objects.create_user(form.cleaned_data['username'], password=form.cleaned_data['password'])
-        auth.login(self.request, user)
+        auth.login(self.request, user, backend=settings.AUTHENTICATION_BACKENDS[0])
         messages.success(self.request, "New account created!")
         return super().form_valid(form)
 
@@ -98,19 +99,20 @@ class LoginSignupView(FormView, SuccessURLAllowedHostsMixin):
         return redirect_to if url_is_safe else ''
 
 
-class NewBoardView(FormView, LoginRequiredMixin):
+class NewBoardView(LoginRequiredMixin, FormView):
     form_class = forms.NewBoardForm
     template_name = "newboard.html"
     extra_context = {"title": "Create new board"}
 
     def form_valid(self, form):
         board = form.save(commit=True)
+        guardian.assign_perm("delete_this_board", self.request.user, board)
         return HttpResponseRedirect(reverse("boardview", args=[board.pk]))
 
 
-class DeletePostView(FormView, LoginRequiredMixin):
+class DeletePostView(LoginRequiredMixin, FormView):
     form_class = Form
-    template_name = "deleteform.html"
+    template_name = "deletepost.html"
     extra_context = {"title": "Delete post"}
 
     def form_valid(self, form):
@@ -131,7 +133,8 @@ class DeletePostView(FormView, LoginRequiredMixin):
         context['post'] = get_object_or_404(Post, pk=self.kwargs['pk'])
         return context
 
-class UserPostsView(TemplateView, LoginRequiredMixin):
+
+class UserPostsView(LoginRequiredMixin, TemplateView):
     template_name = "userposts.html"
 
     def get_context_data(self, **kwargs):
@@ -141,4 +144,29 @@ class UserPostsView(TemplateView, LoginRequiredMixin):
         posts.reverse()
         context['posts'] = posts
         return context
+
+
+class DeleteBoardView(LoginRequiredMixin, FormView):
+    form_class = Form
+    template_name = "deleteboard.html"
+    extra_context = {"title": "Delete board"}
+
+    def get_context_data(self, **kwargs):
+        context = super(DeleteBoardView, self).get_context_data(**kwargs)
+        board = get_object_or_404(Board, pk=self.kwargs['pk'])
+        context['board'] = board
+        return context
+
+    def form_valid(self, form):
+        board = get_object_or_404(Board, pk=self.kwargs['pk'])
+        if self.request.user.has_perm("delete_this_board", board):
+            board.delete()
+            messages.success(self.request, "The board has been deleted!")
+        else:
+            messages.error(self.request, "You have no permission to delete this board!")
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("home")
 
