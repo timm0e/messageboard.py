@@ -1,0 +1,23 @@
+{% extends '_basepage.html' %}
+
+{% block includes %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/boardview.css" %}">
+{% endblock %}
+
+{% block content %}
+    <section class="hero is-dark">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">{{ user.username }}'s posts</h1>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            {% for post in posts %}
+                {% include "_postview.html" with post=post showorigin=True%}
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

@@ -1,11 +1,13 @@
 import datetime
 
 import django.contrib.auth as auth
+import guardian.shortcuts as guardian
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User, UserManager
 from django.contrib.auth.views import LoginView, SuccessURLAllowedHostsMixin
+from django.forms import Form
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 # Create your views here.
@@ -15,18 +17,8 @@ from django.utils.timezone import now
 from django.views.generic import DetailView, TemplateView, FormView
 
 from messageboard import forms
-from messageboard.models import Board
+from messageboard.models import Board, Post
 from messageboard.forms import LoginForm, NewPostForm
-
-
-class HomeView(TemplateView):
-    template_name = "_basepage.html"
-
-    def get_context_data(self, **kwargs):
-        context = super(HomeView, self).get_context_data(**kwargs)
-        context['title'] = "Home"
-        return context
-
 
 class BoardView(TemplateView):
     template_name = 'boardview.html'
@@ -37,6 +29,7 @@ class BoardView(TemplateView):
         context['board'] = board
         context['title'] = board.name
         posts = [post for post in board.posts.all()]
+        posts.reverse()
         context['posts'] = posts
         return context
 
@@ -60,6 +53,7 @@ class NewPost(FormView, LoginRequiredMixin):
         board = get_object_or_404(Board, pk=self.kwargs['pk'])
         post.board = board
         post.save()
+        guardian.assign_perm("delete_this_post", self.request.user, post)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -103,6 +97,7 @@ class LoginSignupView(FormView, SuccessURLAllowedHostsMixin):
         )
         return redirect_to if url_is_safe else ''
 
+
 class NewBoardView(FormView, LoginRequiredMixin):
     form_class = forms.NewBoardForm
     template_name = "newboard.html"
@@ -113,4 +108,37 @@ class NewBoardView(FormView, LoginRequiredMixin):
         return HttpResponseRedirect(reverse("boardview", args=[board.pk]))
 
 
+class DeletePostView(FormView, LoginRequiredMixin):
+    form_class = Form
+    template_name = "deleteform.html"
+    extra_context = {"title": "Delete post"}
+
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs['pk'])
+        if self.request.user.has_perm("delete_this_post", post):
+            post.delete()
+            messages.success(self.request, "Your post has been deleted!")
+        else:
+            messages.error(self.request, "You have no permission to delete this post!")
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse("posts")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post'] = get_object_or_404(Post, pk=self.kwargs['pk'])
+        return context
+
+class UserPostsView(TemplateView, LoginRequiredMixin):
+    template_name = "userposts.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(UserPostsView, self).get_context_data(**kwargs)
+        context['title'] = self.request.user.username
+        posts = [post for post in self.request.user.posts.all()]
+        posts.reverse()
+        context['posts'] = posts
+        return context
 

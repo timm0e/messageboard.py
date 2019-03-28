@@ -1,3 +1,9 @@
 .card {
     margin-bottom: 3vh;
 }
+
+.card-header-icon {
+    position: absolute;
+    right: 0%;
+    top: 3%
+}

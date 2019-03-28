@@ -8,6 +8,7 @@ from django.db import models
 class Board(models.Model):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=280, blank=True, null=True)
+
     # posts: Post[]
 
     def __str__(self):
@@ -20,3 +21,6 @@ class Post(models.Model):
     board = models.ForeignKey(Board, models.CASCADE, related_name="posts")
     user = models.ForeignKey(User, models.CASCADE, related_name="posts")
     date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        permissions = (("delete_this_post", "Delete this post"),)

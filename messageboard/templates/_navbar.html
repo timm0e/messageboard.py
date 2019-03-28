@@ -1,6 +1,6 @@
 <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-        <h1 class="navbar-item">MessageBoard</h1>
+        <h1 class="navbar-item"><a class="has-text-white" href="{% url "home" %}">MessageBoard</a></h1>
     </div>
 
     <div class="navbar-menu">
@@ -16,7 +16,7 @@
                 </div>
             </div>
 
-            <a href="#" class="navbar-item">My Posts</a>
+            <a href="{% url "posts" %}" class="navbar-item">My Posts</a>
         </div>
 
         <div class="navbar-end">

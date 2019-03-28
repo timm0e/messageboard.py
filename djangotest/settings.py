@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'messageboard',
     'livereload',
+    'guardian',
     'widget_tweaks',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -51,6 +52,11 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'livereload.middleware.LiveReloadScript'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 ROOT_URLCONF = 'djangotest.urls'
 

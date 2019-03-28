@@ -1,11 +1,26 @@
 <div class="card">
     <div class="card-header">
         <p class="card-header-title is-centered">{{ post.title }}</p>
+        {% if not noremove %}
+            {% load guardian_tags %}
+            {% get_obj_perms user for post as "post_perms" %}
+            {% if "delete_this_post" in post_perms %}
+                <a href="{% url "deletepost" post.id %}" class="card-header-icon has-text-grey"><i
+                        class="far fa-times-circle"></i></a>
+            {% endif %}
+        {% endif %}
     </div>
     <div class="card-content">
-        <p>{{ post.body | linebreaks}}</p>
+        <p>{{ post.body | linebreaks }}</p>
     </div>
     <div class="card-footer">
-        <p class="card-footer-item has-text-weight-light">Posted by {{ post.user.username }}</p>
+        {% if not showorigin %}
+            <p class="card-footer-item has-text-weight-light">Posted by {{ post.user.username }}</p>
+        {% else %}
+            <p class="card-footer-item has-text-weight-light">
+                Posted in
+                <a style="margin-left: .3rem" href="{% url "boardview" post.board.id %}">{{ post.board.name }}</a></p>
+        {% endif %}
+
     </div>
 </div>

@@ -1,0 +1,35 @@
+{% extends '_basepage.html' %}
+
+{% block includes %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static "css/boardview.css" %}">
+{% endblock %}
+
+{% block content %}
+    <section class="hero is-dark">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">Remove this post?</h1>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            {% include "_postview.html" with noremove=True %}
+        </div>
+        <form method="post">
+            {% csrf_token %}
+            <div class="field is-grouped is-grouped-centered">
+                <div class="control">
+                    <a href="{% url "posts" %}" class="button is-disabled">Cancel</a>
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-danger">Delete</button>
+                </div>
+
+            </div>
+        </form>
+
+
+    </section>
+{% endblock %}
