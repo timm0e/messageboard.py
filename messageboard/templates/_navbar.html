@@ -1,9 +1,16 @@
+{% load static %}
+<script src="{% static "js/navbar.js" %}"></script>
 <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
         <h1 class="navbar-item"><a class="has-text-white" href="{% url "home" %}">MessageBoard</a></h1>
+        <a role="button" class="navbar-burger" data-target="navbarmenu" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
     </div>
 
-    <div class="navbar-menu">
+    <div class="navbar-menu" id="navbarmenu">
         <div class="navbar-start">
             <div class="navbar-item has-dropdown is-hoverable">
                 <a class="navbar-link">Boards</a>
